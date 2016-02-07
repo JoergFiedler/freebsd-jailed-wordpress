@@ -1,0 +1,8 @@
+---
+- name: Copy nginx configuration
+  template:
+    src: 'nginx-server.conf.j2'
+    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server_name }}-wordpress.conf'
+  notify:
+  - Reload jail s nginx
+

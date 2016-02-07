@@ -1,0 +1,6 @@
+# nat http(s) requests required to udpate WP
+table <wp_update_sites> persist file "/etc/pf.table.wp.update.sites"
+nat pass log on {{ host_net_ext_if }} proto tcp \
+  from {{ jail_net_ip }} \
+  to <wp_update_sites> port { http,https } \
+  -> {{ host_net_ext_ip }}

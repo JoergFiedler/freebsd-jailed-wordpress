@@ -1,0 +1,97 @@
+---
+- name: Install additional packages
+  pkgng:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - py27-MySQLdb
+
+- name: Create Wordpress database
+  mysql_db:
+    name: '{{ wp_db_name }}'
+    login_host: '{{ wp_db_host }}'
+    login_password: '{{ wp_db_host_password }}'
+    login_user: '{{ wp_db_host_user }}'
+    state: present
+
+- name: Create MariaDB Wordpress user
+  mysql_user:
+    name: '{{ wp_db_user }}'
+    encrypted: no
+    host: '{{ jail_net_ip }}'
+    login_host: '{{ wp_db_host }}'
+    login_password: '{{ wp_db_host_password }}'
+    login_user: '{{ wp_db_host_user }}'
+    password: '{{ wp_db_password }}'
+    priv: '{{ wp_db_priv }}'
+    state: present
+
+- name: Check if Wordpress Installation is present
+  stat:
+    path: '{{ server_webroot_host_zfs_dir }}/wp-config.php'
+  register: wp_config_file
+
+- name: Download Wordpress
+  become: false
+  local_action: get_url
+    url={{ wp_download_url }}
+    dest=./wordpress-latest.tar.gz
+  when: not wp_config_file.stat.exists
+
+- name: Extract Wordpress
+  unarchive:
+    copy: yes
+    src: './wordpress-latest.tar.gz'
+    dest: '{{ server_webroot_host_zfs_dir }}'
+    owner: 'www'
+    group: 'www'
+  when: not wp_config_file.stat.exists
+
+- name: Move files into place
+  shell: mv {{ server_webroot_host_zfs_dir }}/wordpress/* {{ server_webroot_host_zfs_dir }}/
+  when: not wp_config_file.stat.exists
+
+- name: Create tmp folder
+  file:
+    path: '{{ server_webroot_host_zfs_dir }}/tmp'
+    state: directory
+
+- name: Generate keys and salts.
+  become: false
+  local_action: command
+     curl {{ wp_key_salt_url }}
+  register: wp_keys_salts
+  changed_when: false
+  when: not wp_config_file.stat.exists
+
+- name: Copy Wordpress configuration
+  template:
+    src: 'wp-config.php.j2'
+    dest: '{{ server_webroot_host_zfs_dir }}/wp-config.php'
+  when: not wp_config_file.stat.exists
+
+- name: Update webroot file permissions
+  file:
+    path: '{{ server_webroot_host_zfs_dir }}'
+    state: directory
+    recurse: yes
+    mode: 'u+rw,g+rw'
+    owner: 'www'
+    group: 'www'
+
+- name: Delete obsolete files
+  file:
+    path: '{{ item }}'
+    state: absent
+  with_items:
+    - '{{ server_webroot_host_zfs_dir }}/wp-config.php.sample'
+    - '{{ server_webroot_host_zfs_dir }}/wordpress'
+
+- name: Delete obsolete file (local)
+  become: false
+  local_action: file
+    path=./wordpress-latest.tar.gz
+    state=absent
+  with_items:
+    - ./wordpress-latest.tar.gz
+

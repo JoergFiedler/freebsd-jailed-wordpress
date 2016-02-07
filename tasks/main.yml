@@ -1,0 +1,11 @@
+---
+# tasks file for freebsd-jailed-wordpress
+- include: wordpress.yml
+  tags:
+    - wordpress
+- include: nginx-server.yml
+  tags:
+    - wordpress
+- include: pf.yml
+  tags:
+    - wordpress

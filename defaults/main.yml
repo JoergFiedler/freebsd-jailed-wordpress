@@ -1,0 +1,11 @@
+---
+# defaults file for freebsd-jailed-wordpress
+wp_download_url: 'https://wordpress.org/latest.tar.gz'
+
+wp_db_name: 'wp_{{ server_name_ }}'
+wp_db_user: 'wp_{{ server_name_ }}'
+wp_db_password: 'wp_{{ server_name_ }}'
+wp_db_priv: '{{ wp_db_name }}.*:All'
+wp_db_host: '10.1.0.4'
+wp_db_host_user: 'root'
+wp_db_host_password: 'passwd'
