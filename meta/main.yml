@@ -18,4 +18,5 @@ galaxy_info:
   - Wordpress
   - nginx
 dependencies:
-- { role: JoergFiedler.freebsd-jailed-php-fpm }
+  - { role: JoergFiedler.freebsd-jailed-php-fpm }
+  - { role: JoergFiedler.freebsd-jailed-sftp }
