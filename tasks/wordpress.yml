@@ -75,7 +75,7 @@
     path: '{{ server_webroot_host_zfs_dir }}'
     state: directory
     recurse: yes
-    mode: 'u+rw,g+rw'
+    mode: 'u+rw,g-w,o-rwx'
     owner: '{{ sftp_user_uid | default("www") }}'
     group: 'www'
 
