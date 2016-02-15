@@ -43,7 +43,7 @@
     copy: yes
     src: './wordpress-latest.tar.gz'
     dest: '{{ server_webroot_host_zfs_dir }}'
-    owner: '{{ sftp_user | default("www") }}'
+    owner: '{{ sftp_user_uid | default("www") }}'
     group: 'www'
   when: not wp_config_file.stat.exists
 
@@ -76,7 +76,7 @@
     state: directory
     recurse: yes
     mode: 'u+rw,g+rw'
-    owner: '{{ sftp_user | default("www") }}'
+    owner: '{{ sftp_user_uid | default("www") }}'
     group: 'www'
 
 - name: Delete obsolete files
