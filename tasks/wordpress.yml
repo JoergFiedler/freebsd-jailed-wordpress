@@ -35,13 +35,13 @@
   become: false
   local_action: get_url
     url={{ wp_download_url }}
-    dest=./wordpress-latest.tar.gz
+    dest=/tmp/wordpress-latest.tar.gz
   when: not wp_config_file.stat.exists
 
 - name: Extract Wordpress
   unarchive:
     copy: yes
-    src: './wordpress-latest.tar.gz'
+    src: '/tmp/wordpress-latest.tar.gz'
     dest: '{{ server_webroot_host_zfs_dir }}'
     owner: '{{ sftp_user_uid | default("www") }}'
     group: 'www'
@@ -90,7 +90,7 @@
 - name: Delete obsolete file (local)
   become: false
   local_action: file
-    path=./wordpress-latest.tar.gz
+    path=/tmp/wordpress-latest.tar.gz
     state=absent
   with_items:
     - ./wordpress-latest.tar.gz
