@@ -2,11 +2,3 @@
 # vars file for freebsd-jailed-wordpress
 wp_key_salt_url: 'https://api.wordpress.org/secret-key/1.1/salt/'
 
-nginx_servers: [ {
-  default: true,
-  name: '{{ wp_server_name }}',
-  sftp: {
-    port: '{{ wp_sftp_port }}',
-    authorized_keys: '{{ wp_sftp_authorized_keys }}'
-  }
-}]

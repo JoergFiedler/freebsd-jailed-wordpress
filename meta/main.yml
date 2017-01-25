@@ -19,4 +19,20 @@ galaxy_info:
   - nginx
 allow_duplicates: yes
 dependencies:
-  - { role: JoergFiedler.freebsd-jailed-php-fpm }
+  - { role: JoergFiedler.freebsd-jailed-nginx,
+      nginx_servers: [ {
+        default: '{{ wp_server_default }}',
+        php_fpm_enabled: true,
+        name: '{{ wp_server_name }}',
+        force_www: '{{ wp_server_force_www }}',
+        force_https: '{{ wp_server_force_https | default("no") }}',
+        aliases: '{{ wp_server_aliases | default() }}',
+        https: {
+          wp_ocsp_server: '{{ wp_ocsp_server }}'
+        },
+        sftp: {
+          uuid: '{{ wp_sftp_uuid }}',
+          authorized_keys: '{{ wp_sftp_authorized_keys }}',
+          port: '{{ wp_sftp_port }}'
+        }
+      }]}

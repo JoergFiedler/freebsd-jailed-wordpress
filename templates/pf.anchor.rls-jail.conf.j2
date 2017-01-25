@@ -2,4 +2,4 @@
 pass log on {{ host_net_int_if }} proto tcp \
   from {{ jail_net_ip }} \
   to {{ wp_db_host }} port 3306 \
-  label {{ server_name }}-mysql
+  label {{ wp_server_name }}-mysql
