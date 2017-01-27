@@ -27,9 +27,8 @@ dependencies:
         force_www: '{{ wp_server_force_www }}',
         force_https: '{{ wp_server_force_https | default("no") }}',
         aliases: '{{ wp_server_aliases | default() }}',
-        https: {
-          wp_ocsp_server: '{{ wp_ocsp_server }}'
-        },
+        https: { wp_ocsp_server: '{{ wp_ocsp_server }}' },
+        sftp_enabled: true,
         sftp: {
           uuid: '{{ wp_sftp_uuid }}',
           authorized_keys: '{{ wp_sftp_authorized_keys }}',
