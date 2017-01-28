@@ -1,13 +1,15 @@
 ---
 galaxy_info:
   author: Joerg Fiedler
-  description: Provides a jailed Wordpress server.
+  description: Provides a jailed WordPress server.
   license: BSD
   min_ansible_version: 2.0
   platforms:
   - name: FreeBSD
     versions:
     - 10.2
+    - 10.3
+    - 11.0
   galaxy_tags:
   - FreeBSD
   - jails
@@ -15,23 +17,25 @@ galaxy_info:
   - cloud
   - ec2
   - php-fpm
-  - Wordpress
+  - WordPress
   - nginx
 allow_duplicates: yes
 dependencies:
   - { role: JoergFiedler.freebsd-jailed-nginx,
       nginx_servers: [ {
-        default: '{{ wp_server_default }}',
-        php_fpm_enabled: true,
-        name: '{{ wp_server_name }}',
-        force_www: '{{ wp_server_force_www }}',
-        force_https: '{{ wp_server_force_https | default("no") }}',
         aliases: '{{ wp_server_aliases | default() }}',
-        https: { wp_ocsp_server: '{{ wp_ocsp_server }}' },
+        default: '{{ wp_server_default }}',
+        force_https: '{{ wp_server_force_https }}',
+        force_www: '{{ wp_server_force_www }}',
+        https: { letsencrypt_enabled: true },
+        name: '{{ wp_server_name }}',
+        php_fpm_enabled: true,
         sftp_enabled: true,
         sftp: {
-          uuid: '{{ wp_sftp_uuid }}',
           authorized_keys: '{{ wp_sftp_authorized_keys }}',
-          port: '{{ wp_sftp_port }}'
+          home: '{{ wp_server_webroot_home }}',
+          port: '{{ wp_sftp_port }}',
+          user: '{{ wp_sftp_user }}',
+          uuid: '{{ wp_sftp_uuid }}'
         }
       }]}
