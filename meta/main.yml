@@ -27,7 +27,10 @@ dependencies:
         default: '{{ wp_server_default }}',
         force_https: '{{ wp_server_force_https }}',
         force_www: '{{ wp_server_force_www }}',
-        https: { letsencrypt_enabled: true },
+        https: {
+          enabled: '{{wp_server_force_https }}',
+          letsencrypt_enabled: '{{ wp_server_force_https }}'
+        },
         name: '{{ wp_server_name }}',
         php_fpm_enabled: true,
         sftp_enabled: true,
