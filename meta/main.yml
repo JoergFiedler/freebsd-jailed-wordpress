@@ -22,13 +22,14 @@ galaxy_info:
 allow_duplicates: yes
 dependencies:
   - { role: JoergFiedler.freebsd-jailed-nginx,
+      nginx_pf_redirect: '{{ wp_nginx_pf_redirect }}',
       nginx_servers: [ {
         aliases: '{{ wp_server_aliases | default() }}',
         default: '{{ wp_server_default }}',
         force_https: '{{ wp_server_force_https }}',
         force_www: '{{ wp_server_force_www }}',
         https: {
-          enabled: '{{wp_server_force_https }}',
+          enabled: '{{ wp_server_force_https }}',
           letsencrypt_enabled: '{{ wp_server_force_https }}'
         },
         name: '{{ wp_server_name }}',
@@ -36,7 +37,7 @@ dependencies:
         sftp_enabled: true,
         sftp: {
           authorized_keys: '{{ wp_sftp_authorized_keys }}',
-          home: '{{ wp_server_webroot_home }}',
+          home: '{{ wp_server_home }}',
           port: '{{ wp_sftp_port }}',
           user: '{{ wp_sftp_user }}',
           uuid: '{{ wp_sftp_uuid }}'

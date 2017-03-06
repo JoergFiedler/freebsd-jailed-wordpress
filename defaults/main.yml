@@ -7,9 +7,13 @@ wp_server_force_www: false
 wp_server_name: '{{ jail_name }}'
 wp_server_name_: '{{ wp_server_name | replace(".", "_") }}'
 
-wp_server_webroot_home: '/{{ wp_server_name }}/webroot'
-wp_server_webroot_host_zfs_dir: '{{ host_zfs_www_dir }}{{ wp_server_webroot_home }}'
+wp_server_home: '/srv/{{ wp_server_name }}'
+wp_server_webroot_host_zfs_dir: '{{ host_zfs_www_dir }}/{{ wp_server_name }}/webroot'
 
+wp_nginx_pf_redirect: false
+wp_db_host: '10.1.0.4'
+wp_db_host_password: 'passwd'
+wp_db_host_user: 'root'
 wp_db_name: 'wp_{{ wp_server_name_ }}'
 wp_db_password: 'wp_{{ wp_server_name_ }}'
 wp_db_priv: '{{ wp_db_name }}.*:All'
