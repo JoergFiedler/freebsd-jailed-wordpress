@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.org/JoergFiedler/freebsd-jailed-wordpress.svg?branch=master)](https://travis-ci.org/JoergFiedler/freebsd-jailed-wordpress)
-
 freebsd-jailed-wordpress
 ========================
+
+[![Build Status](https://travis-ci.org/JoergFiedler/freebsd-jailed-wordpress.svg?branch=master)](https://travis-ci.org/JoergFiedler/freebsd-jailed-wordpress)
 
 This role provides a jailed Joomla server. Server can be managed via SFTP. 
 
