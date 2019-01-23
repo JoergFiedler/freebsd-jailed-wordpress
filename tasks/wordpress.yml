@@ -3,8 +3,10 @@
   pkgng:
     name: '{{ item }}'
     state: present
-  with_items:
+  loop:
     - py27-MySQLdb
+  register: pkg_result
+  until: pkg_result is succeeded
 
 - name: Create Wordpress database
   mysql_db:
@@ -33,40 +35,44 @@
 
 - name: Download Wordpress
   become: false
-  local_action: get_url
-    url={{ wp_download_url }}
-    dest=/tmp/wordpress-latest.zip
+  get_url:
+    url: '{{ wp_download_url }}'
+    dest: '/tmp/wordpress-latest.tar.gz'
+  delegate_to: 127.0.0.1
   when: not wp_config_file.stat.exists
 
-- debug: msg={{wp_server_webroot_host_zfs_dir}}
-
-- name: Extract Wordpress
-  unarchive:
-    copy: yes
-    list_files: true
-    src: '/tmp/wordpress-latest.zip'
-    dest: '{{ wp_server_webroot_host_zfs_dir }}'
-    owner: '{{ wp_sftp_uuid | default("www") }}'
-    group: 'www'
+- name: Copy Wordpress package
+  copy:
+    src: '/tmp/wordpress-latest.tar.gz'
+    dest: '/tmp/wordpress-latest.tar.gz'
   when: not wp_config_file.stat.exists
 
-- name: Move files into place
-  shell: mv {{ wp_server_webroot_host_zfs_dir }}/wordpress/* {{ wp_server_webroot_host_zfs_dir }}/
+- name: Extract Wordpress package
+  command: |
+    /usr/bin/tar \
+      -C {{ wp_server_webroot_host_zfs_dir }} \
+      --strip-components 1 \
+      -xzf /tmp/wordpress-latest.tar.gz
   when: not wp_config_file.stat.exists
+  tags:
+    - skip_ansible_lint
 
 - name: Create tmp folder
   file:
     path: '{{ wp_server_webroot_host_zfs_dir }}/tmp'
-    owner: '{{ wp_sftp_uuid }}' 
+    owner: '{{ wp_sftp_uuid }}'
     state: directory
 
 - name: Generate keys and salts.
   become: false
-  local_action: command
+  command: |
      curl {{ wp_key_salt_url }}
   register: wp_keys_salts
   changed_when: false
+  delegate_to: 127.0.0.1
   when: not wp_config_file.stat.exists
+  tags:
+    - skip_ansible_lint
 
 - name: Copy Wordpress configuration
   template:
@@ -93,9 +99,7 @@
 
 - name: Delete obsolete file (local)
   become: false
-  local_action: file
-    path=/tmp/wordpress-latest.zip
-    state=absent
-  with_items:
-    - ./wordpress-latest.zip
-
+  file:
+    path: '/tmp/wordpress-latest.tar.gz'
+    state: absent
+  delegate_to: 127.0.0.1

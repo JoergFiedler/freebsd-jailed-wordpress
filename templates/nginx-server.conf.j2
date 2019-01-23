@@ -16,8 +16,8 @@ location ~* /(?:uploads|files)/.*\.php$ {
   deny all;
 }
 
-# Don not use the cache for logged in users or recent commenters
-if ($http_cookie ~* "comment_author|wordpress_[a-f0-9]+|wp-postpass|wordpress_no_cache|wordpress_logged_in") {
+# Don not use the cache for logged in users or recent commenter
+if ($http_cookie ~* "comment_author|wordpress_[a-f0-9]+|wp-postpass|wordpress_no_cache|wordpress_logged_in|wp_woocommerce_[a-z0-9_]+|woocommerce_[a-z0-9]+") {
     set $skip_cache 1;
 }
 # Don not use the cache for admin pages

@@ -1,0 +1,27 @@
+- hosts: all
+  become: true
+
+  tasks:
+    - include_role:
+        name: 'JoergFiedler.freebsd-jailed-mariadb'
+      vars:
+        jail_freebsd_release: '11.2-RELEASE'
+        jail_name: 'mariadb'
+        jail_net_ip: '10.1.0.5'
+    - include_role:
+        name: 'JoergFiedler.freebsd-jailed-wordpress'
+      tags:
+        - wordpress
+      vars:
+        jail_freebsd_release: '11.2-RELEASE'
+        jail_name: 'wordpress'
+        jail_net_ip: '10.1.0.10'
+        wp_db_host: '10.1.0.5'
+        wp_db_host_password: 'passwd'
+        wp_db_host_user: 'root'
+        wp_db_password: 'password'
+        wp_server_https_enabled: yes
+        wp_server_name: 'localhost'
+        wp_nginx_pf_redirect: yes
+        wp_sftp_authorized_keys: '~/.vagrant.d/insecure_private_key.pub'
+        wp_sftp_port: 10022

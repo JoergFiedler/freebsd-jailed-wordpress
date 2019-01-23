@@ -1,4 +1,4 @@
-# nat http(s) requests required to udpate WP
+# nat http(s) requests required to update WP
 nat pass log on {{ host_net_ext_if }} proto tcp \
   from {{ jail_net_ip }} \
   to any port { http,https } \

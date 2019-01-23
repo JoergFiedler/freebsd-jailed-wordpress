@@ -3,43 +3,45 @@ galaxy_info:
   author: Joerg Fiedler
   description: Provides a jailed WordPress server.
   license: BSD
-  min_ansible_version: 2.0
+  min_ansible_version: 2.7
   platforms:
   - name: FreeBSD
     versions:
-    - 10.2
-    - 10.3
-    - 11.0
+    - 11.2
   galaxy_tags:
-  - FreeBSD
-  - jails
+  - freebsd
+  - jail
   - iocage
   - cloud
   - ec2
-  - php-fpm
-  - WordPress
+  - php
+  - fpm
+  - wordpress
   - nginx
 allow_duplicates: yes
 dependencies:
-  - { role: JoergFiedler.freebsd-jailed-nginx,
-      nginx_pf_redirect: '{{ wp_nginx_pf_redirect }}',
-      nginx_servers: [ {
-        aliases: '{{ wp_server_aliases | default() }}',
-        default: '{{ wp_server_default }}',
-        force_https: '{{ wp_server_force_https }}',
-        force_www: '{{ wp_server_force_www }}',
-        https: {
-          enabled: '{{ wp_server_force_https }}',
-          letsencrypt_enabled: '{{ wp_server_force_https }}'
-        },
-        name: '{{ wp_server_name }}',
-        php_fpm_enabled: true,
-        sftp_enabled: true,
-        sftp: {
-          authorized_keys: '{{ wp_sftp_authorized_keys }}',
-          home: '{{ wp_server_home }}',
-          port: '{{ wp_sftp_port }}',
-          user: '{{ wp_sftp_user }}',
-          uuid: '{{ wp_sftp_uuid }}'
-        }
-      }]}
+  - role: JoergFiedler.freebsd-jailed-nginx
+    vars:
+      nginx_pf_redirect: '{{ wp_nginx_pf_redirect }}'
+      nginx_letsencrypt_enabled: '{{ wp_server_https_enabled }}'
+      nginx_syslogd_server: '{{ wp_server_syslogd_server }}'
+      nginx_tarsnap_enabled: '{{ wp_server_tarsnap_enabled }}'
+      nginx_servers:
+        - aliases: '{{ wp_server_aliases }}'
+          force_https: '{{ wp_server_https_enabled }}'
+          force_www: '{{ wp_server_force_www }}'
+          https:
+            enabled: '{{ wp_server_https_enabled }}'
+            letsencrypt_enabled: '{{ wp_server_https_enabled }}'
+            key_file: '{{ wp_server_https_key_file }}'
+            certbundle_file: '{{ wp_server_https_certbundle_file }}'
+            dhparam_file: '{{ wp_server_https_dhparam_file }}'
+          name: '{{ wp_server_name }}'
+          php_fpm_enabled: yes
+          sftp:
+            authorized_keys: '{{ wp_sftp_authorized_keys }}'
+            home: '{{ wp_server_home }}'
+            port: '{{ wp_sftp_port }}'
+            user: '{{ wp_sftp_user }}'
+            uuid: '{{ wp_sftp_uuid }}'
+          sftp_enabled: yes

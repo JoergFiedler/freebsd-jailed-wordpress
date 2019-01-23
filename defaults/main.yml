@@ -1,17 +1,6 @@
 ---
 # defaults file for freebsd-jailed-wordpress
-wp_download_url: 'https://wordpress.org/latest.zip'
-wp_server_default: true
-wp_server_force_https: false
-wp_server_force_www: false
-wp_server_name: '{{ jail_name }}'
-wp_server_name_: '{{ wp_server_name | replace(".", "_") }}'
-
-wp_server_home: '/srv/{{ wp_server_name }}'
-wp_server_webroot_host_zfs_dir: '{{ host_zfs_www_dir }}/{{ wp_server_name }}/webroot'
-
-wp_nginx_pf_redirect: false
-wp_db_host: '10.1.0.4'
+wp_db_host: ''
 wp_db_host_password: 'passwd'
 wp_db_host_user: 'root'
 wp_db_name: 'wp_{{ wp_server_name_ }}'
@@ -19,6 +8,25 @@ wp_db_password: 'wp_{{ wp_server_name_ }}'
 wp_db_priv: '{{ wp_db_name }}.*:All'
 wp_db_user: 'wp_{{ wp_server_name_ }}'
 
-wp_sftp_port: 10200
-wp_sftp_user: 'sftp_{{ wp_server_name_ | truncate(5, True, "") }}'
+wp_download_url: 'https://wordpress.org/latest.tar.gz'
+
+wp_server_aliases: ''
+wp_server_force_www: no
+wp_server_home: '/srv/{{ wp_server_name }}'
+
+wp_server_https_certbundle_file: 'localhost-certbundle.pem'
+wp_server_https_dhparam_file: 'localhost-dhparam.pem'
+wp_server_https_enabled: yes
+wp_server_https_key_file: 'localhost-key.pem'
+
+wp_server_name: '{{ jail_name }}'
+wp_server_name_: '{{ wp_server_name | replace(".", "_") }}'
+wp_nginx_pf_redirect: no
+wp_server_syslogd_server: 'localhost'
+wp_server_tarsnap_enabled: no
+wp_server_webroot_host_zfs_dir: '{{ host_zfs_www_dir }}/{{ wp_server_name }}/webroot'
+
+wp_sftp_authorized_keys: ''
+wp_sftp_port: 10022
 wp_sftp_uuid: 5000
+wp_sftp_user: 'sftp_{{ wp_server_name_ | truncate(5, True, "", 0) }}'

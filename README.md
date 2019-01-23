@@ -1,15 +1,11 @@
+[![Build Status](https://travis-ci.org/JoergFiedler/freebsd-jailed-wordpress.svg?branch=master)](https://travis-ci.org/JoergFiedler/freebsd-jailed-wordpress)
+
 freebsd-jailed-wordpress
 ========================
 
-This role provides a jailed WordPress server. The jail is set up using the 
-latest version. 
-
-Additionally an user is created who is allowed to access this site via SFTP. 
+This role provides a jailed Joomla server. Server can be managed via SFTP. 
 
 Furthermore Lets Encrypt is used to create and manage server certificates.
-
-To see this role in action, have a look at 
-[this project of mine](https://github.com/JoergFiedler/freebsd-ansible-demo).
 
 Requirements
 ------------
@@ -17,64 +13,33 @@ Requirements
 This role is intent to be used with a fresh FreeBSD installation. There is a
 Vagrant Box with providers for VirtualBox and EC2 you may use.
 
-You will find a sample project which uses this role 
-[here](https://github.com/JoergFiedler/freebsd-ansible-demo).
-
 Role Variables
 --------------
-
-##### wp_server_name
-The server name for this WordPress installation. Use the domain name here, e.g.
-`example.com`. Default: `{{ jail_name }}`.
- 
-##### wp_server_aliases
-The domain name aliases for this server, e.g. `www.example.com`. Default: `''`.
-
-##### wp_server_force_www
-Create redirect rules to redirect all requests to `www` subdomain. You need to
-specify `wp_server_aliases`. Default: `false`.
-
-##### wp_server_force_https
-Create redirect rules to redirect all requests to `https` scheme. Certificates
-will be created using Lets Encrypt. Default: `false`.
-
-##### wp_download_url
-The Download URL. Default: `'https://wordpress.org/latest.zip'`.
-
-##### wp_db_name
-The MariaDB database name. The database will be created if not exists.
-Default: : Default: `'wp_{{ wp_server_name_ }}'`.
-
-##### wp_db_user
-The db user name for this WordPress installation. Default: `'wp_{{ wp_server_name_ }}'`.
-
-##### wp_db_password
-The db user's password. Default: `'wp_{{ server_name_ }}'`.
-
-##### wp_db_priv
-The privileges granted to the db user. Default: `'{{ wp_db_name }}.*:All'`.
-
-##### wp_db_host
-The MariaDB host ip. Default: `''`.
-
-##### wp_db_host_user
-The administrative DB user used to create the user and the db. Default: `''`.
-
-##### wp_db_host_password
-The password for the administrative DB user. Default: `''`.
-
-##### wp_sftp_uuid
-The uid for the SFTP user to create. Default: `5000`.
-
-##### wp_sftp_port
-The port the SFTP server should listen on. Default: `10200`.
-
-##### wp_sftp_user
-The SFTP user name. Default: `'sftp_{{ wp_server_name_ | truncate(5, True, "") }}'`.
-
-##### wp_sftp_authorized_keys
-The authorized key file used for SFTP access to this WordPress installation. 
-Default: `''`
+| Variable | Description | Default |
+| :------- | :---------- | :-----: |
+|wp_db_host IP address of the DB host. | `''` |
+|wp_db_host_password | Password of the user who is allowed to create tables and grant permissions. | 'passwd' |
+| wp_db_host_user | The user that is allowed to create tables and grant permissions. | `root` | 
+| wp_db_name | | The database name for the WP DB instance. | `wp_{{ wp_server_name_ }}` |
+| wp_db_password | The password for the WP DB instance. | `wp_{{ wp_server_name_ }}` |
+| wp_db_priv: '{{ wp_db_name }}.*:All' | Privileges given to the WP DB instance user. | `{{ WP_db_name }}.*:All` |
+| wp_db_user | The WP DB instance user name. | `wp_{{ wp_server_name_ }}` |
+| wp_download_url | The wordpress package (tar.gz) | `https://wordpress.org/latest.tar.gz` |
+| wp_server_aliases | Aliases (domain names) that the server should listen to. | `''` |
+| wp_server_force_www | Set to `yes` if the server should redirect to `www` subdomain. Add `www.{{ server_name }}` to aliases. | `no` |
+| wp_server_home | Server home directory. | `/srv/{{ joomla_server_name }}` |
+| wp_server_https_certbundle_file: 'localhost-certbundle.pem' | CA certificate chain. | `localhost-certbundle.pem` |
+| wp_server_https_dhparam_file | DH param file. |  `localhost-dhparam.pem` |
+| wp_server_https_enabled | Enable HTTPS for this server. Automatic redirect of non-HTTPS request will happen. | `yes` |
+| wp_server_https_key_file | The server's private key. | `localhost-key.pem` |
+| wp_server_name | The server name (domain name). | `{{ jail_name }}` |
+| wp_nginx_pf_redirect | All http(s) traffic will be redirect from host to this jail. | `no` |
+| wp_server_syslogd_server | The syslogd server to use for request logging. | `localhost` |
+| wp_server_tarsnap_enabled | Backup the server's webroot using Tarsnap. Must be enabled on host level as well. | `no` |
+| wp_sftp_authorized_keys | File that should be used as `authorized_keys` file for SFTP. | `''` |
+| wp_sftp_port | Port to use for SFTP. | `10022` |
+| wp_sftp_uuid | UUID for the SFTP user. | `5000` |
+| wp_sftp_user | Name of the SFTP user. | `sftp_{{ joomla_server_name_  truncate(5, True, "", 0) }}` |
 
 Dependencies
 ------------
@@ -84,18 +49,33 @@ Dependencies
 Example Playbook
 ----------------
 
-    - { role: JoergFiedler.freebsd-jailed-wordpress,
-        tags: ['_wordpress'],
-        use_ssmtp: true,
-        use_syslogd_server: true,
-        jail_name: 'wordpress',
-        jail_net_ip: '10.1.0.6',
-        wp_server_name: 'example.com',
-        wp_server_aliases: 'www.example.com',
-        wp_db_host_user: 'root',
-        wp_db_host_password: 'passwd'
-        wp_db_host: 'mariadb.host',
-        wp_sftp_authorized_keys: 'public.key.file' }
+    - hosts: all
+      become: true
+    
+      tasks:
+        - include_role:
+            name: 'JoergFiedler.freebsd-jailed-mariadb'
+          vars:
+            jail_freebsd_release: '11.2-RELEASE'
+            jail_name: 'mariadb'
+            jail_net_ip: '10.1.0.5'
+        - include_role:
+            name: 'JoergFiedler.freebsd-jailed-wordpress'
+          tags:
+            - wordpress
+          vars:
+            jail_freebsd_release: '11.2-RELEASE'
+            jail_name: 'wordpress'
+            jail_net_ip: '10.1.0.10'
+            wp_db_host: '10.1.0.5'
+            wp_db_host_password: 'passwd'
+            wp_db_host_user: 'root'
+            wp_db_password: 'password'
+            wp_server_https_enabled: yes
+            wp_server_name: 'localhost'
+            wp_nginx_pf_redirect: yes
+            wp_sftp_authorized_keys: '~/.vagrant.d/insecure_private_key.pub'
+            wp_sftp_port: 10022
 
 License
 -------

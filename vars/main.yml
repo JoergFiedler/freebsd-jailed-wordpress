@@ -1,4 +1,4 @@
 ---
 # vars file for freebsd-jailed-wordpress
 wp_key_salt_url: 'https://api.wordpress.org/secret-key/1.1/salt/'
-
+wp_server_name_: '{{ wp_server_name | replace(".", "_") }}'
