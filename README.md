@@ -53,6 +53,8 @@ Example Playbook
       become: true
     
       tasks:
+        - import_role:
+            name: 'JoergFiedler.freebsd-jail-host'
         - include_role:
             name: 'JoergFiedler.freebsd-jailed-mariadb'
           vars:
