@@ -36,6 +36,14 @@ dependencies:
             dhparam_file: '{{ wp_server_https_dhparam_file }}'
           name: '{{ wp_server_name }}'
           php_fpm_enabled: yes
+          php:
+            fpm_enabled: yes
+            fastcgi_cache: '{{ wp_server_php_fastcgi_cache }}'
+            max_requests: '{{ wp_server_php_max_requests }}'
+            max_children: '{{ wp_server_php_max_children }}'
+            memory_limit: '{{ wp_server_php_memory_limit }}'
+            upload_max_filesize: '{{ wp_server_php_upload_max_filesize }}'
+            post_max_size: '{{ wp_server_php_post_max_size }}'
           sftp:
             authorized_keys: '{{ wp_sftp_authorized_keys }}'
             home: '{{ wp_server_home }}'

@@ -34,6 +34,12 @@ Role Variables
 | wp_server_https_key_file | The server's private key. | `localhost-key.pem` |
 | wp_server_name | The server name (domain name). | `{{ jail_name }}` |
 | wp_nginx_pf_redirect | All http(s) traffic will be redirect from host to this jail. | `no` |
+| wp_server_php_fastcgi_cache | Set to `off` to disable the fastcgi cache. | `'z_nginx'` |
+| wp_server_php_max_requests | Maximum number of request handled by php fpm children. | `1000` |
+| wp_server_php_max_children | Maximum number of php fpm children running. | `3` |
+| wp_server_php_memory_limit| Memory limit for php fpm. | `'64M'` |
+| wp_server_php_upload_max_filesize | Max file upload size accepted. | `'48M'` |
+| wp_server_php_post_max_size| Max post request size. | `'46M'` |
 | wp_server_syslogd_server | The syslogd server to use for request logging. | `localhost` |
 | wp_server_tarsnap_enabled | Backup the server's webroot using Tarsnap. Must be enabled on host level as well. | `no` |
 | wp_sftp_authorized_keys | File that should be used as `authorized_keys` file for SFTP. | `''` |

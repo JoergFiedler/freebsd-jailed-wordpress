@@ -26,6 +26,13 @@ wp_server_syslogd_server: 'localhost'
 wp_server_tarsnap_enabled: no
 wp_server_webroot_host_zfs_dir: '{{ host_zfs_www_dir }}/{{ wp_server_name }}/webroot'
 
+wp_server_php_fastcgi_cache: 'z_nginx'
+wp_server_php_max_requests: 1000
+wp_server_php_max_children: 3
+wp_server_php_memory_limit: '64M'
+wp_server_php_upload_max_filesize: '48M'
+wp_server_php_post_max_size: '46M'
+
 wp_sftp_authorized_keys: ''
 wp_sftp_port: 10022
 wp_sftp_uuid: 5000
