@@ -1,5 +1,5 @@
 - src: 'git+https://github.com/JoergFiedler/freebsd-jailed-nginx.git'
-  version: 'v3.1.0'
+  version: 'v3.2.0'
   name: 'JoergFiedler.freebsd-jailed-nginx'
 - src: 'git+https://github.com/JoergFiedler/freebsd-jailed-mariadb.git'
   version: 'v1.2.4'
