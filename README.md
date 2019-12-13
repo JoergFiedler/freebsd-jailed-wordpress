@@ -58,13 +58,16 @@ Example Playbook
     - hosts: all
       become: true
     
+      vars:
+        host_ioc_release_version: '11.3-RELEASE'
+    
       tasks:
         - import_role:
             name: 'JoergFiedler.freebsd-jail-host'
         - include_role:
             name: 'JoergFiedler.freebsd-jailed-mariadb'
           vars:
-            jail_freebsd_release: '11.2-RELEASE'
+            jail_freebsd_release: '{{ host_ioc_release_version }}'
             jail_name: 'mariadb'
             jail_net_ip: '10.1.0.5'
         - include_role:
@@ -72,16 +75,16 @@ Example Playbook
           tags:
             - wordpress
           vars:
-            jail_freebsd_release: '11.2-RELEASE'
+            jail_freebsd_release: '{{ host_ioc_release_version }}'
             jail_name: 'wordpress'
             jail_net_ip: '10.1.0.10'
             wp_db_host: '10.1.0.5'
             wp_db_host_password: 'passwd'
             wp_db_host_user: 'root'
             wp_db_password: 'password'
+            wp_nginx_pf_redirect: yes
             wp_server_https_enabled: yes
             wp_server_name: 'localhost'
-            wp_nginx_pf_redirect: yes
             wp_sftp_authorized_keys: '~/.vagrant.d/insecure_private_key.pub'
             wp_sftp_port: 10022
 

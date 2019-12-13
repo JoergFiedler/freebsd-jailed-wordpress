@@ -2,7 +2,7 @@
   version: 'v3.3.1'
   name: 'JoergFiedler.freebsd-jailed-nginx'
 - src: 'git+https://github.com/JoergFiedler/freebsd-jailed-mariadb.git'
-  version: 'v1.2.4'
+  version: 'v1.2.5'
   name: 'JoergFiedler.freebsd-jailed-mariadb'
 - src: 'git+https://github.com/JoergFiedler/freebsd-jail-host.git'
   version: 'v3.2.1'

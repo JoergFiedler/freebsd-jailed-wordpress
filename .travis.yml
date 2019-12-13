@@ -1,6 +1,6 @@
 dist: xenial
 language: python
-python: 2.7
+python: 3.6
 install:
 - wget https://releases.hashicorp.com/vagrant/2.2.2/vagrant_2.2.2_x86_64.deb
 - sudo dpkg -i vagrant_2.2.2_x86_64.deb
@@ -12,8 +12,8 @@ before_script:
 script:
 - yamllint .
 - ansible-lint .
-- ansible-galaxy install -fp ./ -r .requirements.yml
-- vagrant box add JoergFiedler/FreeBSD-11.2 --provider aws
+- ansible-galaxy install -p ./ -r .requirements.yml
+- vagrant box add JoergFiedler/FreeBSD-11.3 --provider aws
 - vagrant up --provider aws
 - host=$(vagrant ssh-config |grep HostName |awk '{print $2}')
 - test $(curl -w %{http_code} https://${host}/wp-admin/install.php -o /dev/null
