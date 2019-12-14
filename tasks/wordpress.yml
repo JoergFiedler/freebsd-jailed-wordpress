@@ -4,7 +4,7 @@
     name: '{{ item }}'
     state: present
   loop:
-    - py27-MySQLdb
+    - py36-mysqlclient
   register: pkg_result
   until: pkg_result is succeeded
 
