@@ -2,11 +2,10 @@ VAGRANTFILE_API_VERSION = '2'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = 'JoergFiedler/freebsd-11.3'
-  config.vm.box_version = "0.0.2"
+  config.vm.box = 'JoergFiedler/freebsd-12'
   config.vm.synced_folder '.', '/vagrant', disabled: true
-  config.ssh.shell ='/bin/sh'
   config.ssh.insert_key = false
+  config.ssh.shell ='/bin/sh'
 
   config.vm.define 'wordpress' do |host|
     host.vm.provision 'ansible', type: 'ansible' do |ansible|
@@ -17,10 +16,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision 'ansible', type: 'ansible' do |ansible|
     ansible.galaxy_roles_path = ENV['ANSIBLE_ROLES_PATH'] || '../'
     ansible.tags = ENV['ANSIBLE_TAGS']
-    ansible.host_vars = {
-        "127.0.0.1" => {"ansible_python_interpreter" => '/usr/bin/python'},
-        "wordpress" => {"ansible_python_interpreter" => '/usr/local/bin/python3.6'}
-    }
     ansible.skip_tags = ENV['ANSIBLE_SKIP_TAGS']
     ansible.verbose = ENV['ANSIBLE_VERBOSE']
   end
