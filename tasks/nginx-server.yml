@@ -5,4 +5,4 @@
     src: 'nginx-server.conf.j2'
     dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ wp_server_name }}-wordpress.conf'
   notify:
-  - Reload jail s nginx
+  - Reload {{ jail_name }} nginx
