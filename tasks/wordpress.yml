@@ -8,6 +8,15 @@
   register: pkg_result
   until: pkg_result is succeeded
 
+- name: Add DNS names to /etc/hosts (allow requests to self)
+  lineinfile:
+    backup: '{{ jail_backup_old_files }}'
+    dest: '{{ jail_home.stdout }}/etc/hosts'
+    state: present
+    regexp: '^{{ wp_server_self_ip }}'
+    line: '{{ wp_server_self_ip }}  {{ wp_server_name }} {{ wp_server_aliases }}'
+  when: wp_server_self_ip | length > 0
+
 - name: Create Wordpress database
   mysql_db:
     name: '{{ wp_db_name }}'
