@@ -1,5 +1,14 @@
+{{ ansible_managed | comment }}
+
 # allow traffic to DB
 pass log on {{ host_net_int_if }} proto tcp \
   from {{ jail_net_ip }} \
   to {{ wp_db_host }} port 3306 \
   label {{ wp_server_name }}-mysql
+{% if wp_server_self_ip != '' %}
+# allow traffic to self
+pass log on lo0 proto tcp \
+  from {{ jail_net_ip }} \
+  to {{ wp_server_self_ip }} \
+  label {{ wp_server_name }}-self
+{% endif %}

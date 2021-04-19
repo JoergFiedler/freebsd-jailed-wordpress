@@ -13,6 +13,7 @@ wp_download_url: 'https://wordpress.org/latest.tar.gz'
 wp_server_aliases: ''
 wp_server_force_www: no
 wp_server_home: '/srv/{{ wp_server_name }}'
+wp_server_self_ip: ''
 
 wp_server_https_certbundle_file: 'localhost-certbundle.pem'
 wp_server_https_dhparam_file: 'localhost-dhparam.pem'
